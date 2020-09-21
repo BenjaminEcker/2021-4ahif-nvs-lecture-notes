@@ -23,9 +23,9 @@ endif::backend-html5[]
 == 2020-09-21
 
 * http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/00_java.oekosystem.pdf[00_java.oekosystem.pdf, window="_blank"]
-* http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/01_Introduction.pdf[01_Introduction.pdf]
-* http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/01_NVS_Uebersicht.pdf[01a_NVS_Uebersicht.pdf]
-* http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/02_microprofile.pdf[02_microprofile.pdf]
+* http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/01_Introduction.pdf[01_Introduction.pdf, window="_blank"]
+* http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/01_NVS_Uebersicht.pdf[01a_NVS_Uebersicht.pdf, window="_blank"]
+* http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/02_microprofile.pdf[02_microprofile.pdf, window="_blank"]
 
 
 
