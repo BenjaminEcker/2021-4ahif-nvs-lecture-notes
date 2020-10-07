@@ -1,0 +1,26 @@
+GET http://localhost:8080/hello/person
+Accept: application/json
+
+###
+
+GET http://localhost:8080/hello/p
+Accept: application/json
+
+###
+
+POST http://localhost:8080/hello/p3
+Content-Type: application/json
+
+{
+  "name": "Vinzent"
+}
+
+###
+
+POST http://localhost:8080/hello/p4
+Content-Type: application/json
+
+{
+  "vorname": "Vinzent",
+  "nachname": "Kroneisl"
+}

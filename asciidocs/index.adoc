@@ -20,6 +20,153 @@ endif::backend-html5[]
 // print the toc here (not at the default position)
 //toc::[]
 
+.Mikroprojekte - Themenvergabe
+//[%collapsible%open]
+[%collapsible]
+====
+[cols="1,5,5,2"]
+|===
+|lfd.Nr. |Name |Thema |Feedback
+
+|{counter:usage}
+|Daniel
+|Tageszeitung
+|
+
+|{counter:usage}
+|Karawane
+|Produktionsbetrieb (Fließband)
+|
+
+|{counter:usage}
+|Benjamin Musikfreund 1
+|Centermanager
+|
+
+|{counter:usage}
+|Paul
+|Baustellenkoordinator
+|
+
+|{counter:usage}
+|Jonas die Birke
+|Baumschule
+|
+
+|{counter:usage}
+|Nico
+|Kochrezepte
+|
+
+|{counter:usage}
+|Benjamin Eggman
+|Farmverwaltung
+|
+
+|{counter:usage}
+|Moritz Brille
+|Optiker
+|
+
+|{counter:usage}
+|Lorenzius
+|Facility Management
+|
+
+|{counter:usage}
+|Lukas Hörnchen
+|Zooverwaltung
+|
+
+|{counter:usage}
+|Nathalie
+|Event-Manager
+|
+
+|{counter:usage}
+|Tarik Tarik
+|Reisebüro
+|
+
+|{counter:usage}
+|David Musikfreund 2
+|Plattenlabel
+|
+
+|{counter:usage}
+|Jan Händler
+|Parkplatzverwaltung
+|
+
+|{counter:usage}
+|Vinzent K
+|Skischule
+|
+
+|{counter:usage}
+|Muhammet
+|Fitnessstudio
+|
+
+|{counter:usage}
+|Marcel die Ecke
+|Fakturierung
+|
+
+|{counter:usage}
+|Moritz ohne Brille
+|Kfz-Händler
+|icon:uncheck[]
+
+|{counter:usage}
+|Jimmy
+|Friseurladen
+|icon:uncheck[]
+
+|{counter:usage}
+|Roberto
+|Restaurant
+|icon:uncheck[]
+
+|{counter:usage}
+|Felix der Große
+|Juwelier
+|icon:uncheck[]
+
+|{counter:usage}
+|Eminem
+|Busreisen (inkl Schulbusse)
+|
+
+|{counter:usage}
+|Bocki Musikfreund 3
+|Autovermietung
+|
+
+|{counter:usage}
+|Patrick
+|Tanzschule
+|icon:uncheck[]
+
+|{counter:usage}
+|Fabian Woody
+|Bücherei
+|
+
+|{counter:usage}
+|Philip Cokeman
+|Friedhofsverwaltung
+|icon:uncheck[]
+
+|{counter:usage}
+|Marc Krimiman
+|Callcenter
+|icon:uncheck[]
+
+|===
+
+====
+
 == 2020-09-21
 
 * http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/00_java.oekosystem.pdf[00_java.oekosystem.pdf, window="_blank"]
@@ -27,6 +174,59 @@ endif::backend-html5[]
 * http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/01_NVS_Uebersicht.pdf[01a_NVS_Uebersicht.pdf, window="_blank"]
 * http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/02_microprofile.pdf[02_microprofile.pdf, window="_blank"]
 
+== 2020-09-24
+
+=== Create your First Quarkus Project
+
+Project created; not yet started
+
+== 2020-09-28
+
+* Quarkus running
+** JSON-B (for json)
+** JAXB (for xml)
+
+== 2020-10-05
+
+* POST-Request
+* @Consumes (Input-Parameter)
+
+=== Assignment 1: CRUD-REST-Endpoint for One Entity
+
+Create a simple application for your micro-project-topic in Quarkus:
+
+. lastname-projectname zB mustermann-restaurant
+In the package `at.htl.<projectname>.entity` zB. `at.htl.restaurant.entity` create a new entity-class ie Product
+(in this restaurant are the products dishes and beverages)
+. Store the data in a collection in a appropriate repository (you use NO database)
+. in the package `at.htl.<projectname>.boundary` (ie `at.htl.restaurant.boundary`) create
+a class `<Entity>Service.java` ie `ProductService.java`
+. In this class create some endpoints to provide CRUD-functionality. +
+* Use
+** JsonObject
+** JsonArray
+** Response
+** marshalling of an object
+
+. In a file `request.http` create the appropriate requests, for consuming your endpoints.
+. The endpoints are supposed to work with data in JSON- or XML-format
+. Use Swagger for documenting your endpoints.
+. Create an essential description of your project in the `README.md`
+. Don't forget to exclude the files, which are not supposed to be stored in the github-repo.
+. Create a appropriate message for each commit.
+. *Deadline: 12.October 2020, 23:59*
+. You can find the Classroom Link at Discord.
+
+TIP: Use a master data table (Stammdatentabelle)
+
+----
+____   ____.__       .__    ___________        _____      .__
+\   \ /   /|__| ____ |  |   \_   _____/_______/ ____\____ |  |    ____
+ \   Y   / |  |/ __ \|  |    |    __)_\_  __ \   __\/  _ \|  |   / ___\
+  \     /  |  \  ___/|  |__  |        \|  | \/|  | (  <_> )  |__/ /_/  >
+   \___/   |__|\___  >____/ /_______  /|__|   |__|  \____/|____/\___  /
+                   \/               \/                         /_____/
+----
 
 
 
@@ -34,6 +234,27 @@ endif::backend-html5[]
 
 
 
+
+
+=== Begriff des Marshalling
+
+[plantuml,marshalling,png]
+----
+@startuml
+storage "java-object" as javaobject
+file json
+javaobject -right-> json :marshalling >
+@enduml
+----
+
+[plantuml,unmarshalling,png]
+----
+@startuml
+storage "java-object" as javaobject
+file json
+javaobject <-right- json :< unmarshalling
+@enduml
+----
 
 
 
