@@ -216,7 +216,7 @@ a class `<Entity>Service.java` ie `ProductService.java`
 . Use Swagger for documenting your endpoints.
 . Create an essential description of your project in the `README.md`
 . Don't forget to exclude the files, which are not supposed to be stored in the github-repo.
-. Create a appropriate message for each commit.
+. Create an commit for each endpoint with appropriate messages for each commit.
 . *Deadline: 12.October 2020, 23:59*
 . You can find the Classroom Link at Discord.
 
