@@ -188,6 +188,9 @@ Project created; not yet started
 
 == 2020-10-05
 
+* http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/04_REST_Uebersicht.pdf[04_REST_Uebersicht.pdf, window="_blank"]
+
+
 * POST-Request
 * @Consumes (Input-Parameter)
 
@@ -227,10 +230,6 @@ ____   ____.__       .__    ___________        _____      .__
    \___/   |__|\___  >____/ /_______  /|__|   |__|  \____/|____/\___  /
                    \/               \/                         /_____/
 ----
-
-
-
-
 
 
 
