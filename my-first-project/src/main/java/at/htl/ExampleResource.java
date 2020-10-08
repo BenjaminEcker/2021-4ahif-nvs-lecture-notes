@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
 
-@Path("hello")
+@Path("api")
 public class ExampleResource {
 
     @GET
@@ -20,14 +20,14 @@ public class ExampleResource {
     }
 
     @GET
-    @Path("/person")
+    @Path("person")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Person findPerson() {
         return new Person("Bozidar");
     }
 
     @GET
-    @Path("/p")
+    @Path("p")
     @Produces({MediaType.APPLICATION_JSON})
     public Response findPersonx() {
         return Response
@@ -36,7 +36,7 @@ public class ExampleResource {
                 .build();
     }
     @GET
-    @Path("/p2")
+    @Path("p2")
     @Produces({MediaType.APPLICATION_JSON})
     public JsonObject findPersony() {
         return Json.createObjectBuilder().add("name","Susi").build();
