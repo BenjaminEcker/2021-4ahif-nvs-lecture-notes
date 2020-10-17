@@ -329,3 +329,15 @@ public class ExampleResourceTest {
 <.> der statische Import ist kritisch
 <.> startet die Applikation auf einem eigenen Port
 
+
+== Bewertung Assignment 1
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,822 @@
+= Assignment 01 Grading
+Thomas Stütz
+1.0.0, 2020-09-21: crud endpoint for a single entity
+ifndef::imagesdir[:imagesdir: images]
+//:toc-placement!:  // prevents the generation of the doc at this position, so it can be printed afterwards
+:sourcedir: ../src/main/java
+:icons: font
+:sectnums:    // Nummerierung der Überschriften / section numbering
+:toc: left
+
+//Need this blank line after ifdef, don't know why...
+ifdef::backend-html5[]
+
+// https://fontawesome.com/v4.7.0/icons/
+//icon:file-text-o[link=https://raw.githubusercontent.com/htl-leonding-college/asciidoctor-docker-template/master/asciidocs/{docname}.adoc] ‏ ‏ ‎
+//icon:github-square[link=https://github.com/htl-leonding-college/asciidoctor-docker-template] ‏ ‏ ‎
+//icon:home[link=https://htl-leonding.github.io/]
+endif::backend-html5[]
+
+// print the toc here (not at the default position)
+//toc::[]
+
+
+
+== Bewertung Assignment 1
+
+Download am 2020-10-14 14:13
+//[%collapsible%open]
+//[%collapsible]
+//====
+[cols="1,1,8,2"]
+|===
+|lfd.Nr. |Name |Kommentar |Note
+
+
+
+|{counter:katnr}
+|AD
+a|
+* Thema Tageszeitung
+* unzureichende Dokumentation im README.md
+* in den routes nicht Groß-Kleinschreibung verwenden sondern kebab-Case
+* es fehlen die Requests in request.http
+* Das scheint mir etwas überspezifiziert
+
+[source,java]
+----
+@XmlRootElement
+public class Author {
+
+    @XmlElement private String firstname;
+    @XmlElement private String lastname;
+    @XmlElement private LocalDate birthDate;
+    @XmlElement private long authorID;
+    //..
+}
+----
+* kein POST vorhanden
+* *DAS PROJEKT IST NICHT LAUFFÄHIG, DU HAST DAS mvnw-Skript NICHT COMMITTED !!!*
+** im Normalfall ist das ein ngd(5)
+|gen(4)
+
+
+
+
+
+|{counter:katnr}
+|BK aka M
+a|
+* Thema Produktionsbetrieb (Fließband)
+* keine ausreichende Doku im README.md
+* zuwenige Commits (nur 3)
+* ./mvnw clean compile quarkus:dev funktioniert nicht
+**  java.lang.ClassNotFoundException: org.apache.maven.wrapper.MavenWrapperMain
+* Aufruf stimmt nicht mit Route überein
+** Response code: 405 (Method Not Allowed)
+
+.Für diese Route gibt es KEINEN Endpoint
+----
+GET http://localhost:8080/api/product
+Accept: application/json
+----
+* irgendwie funktioniert gar nichts
+----
+{
+  "details": "Error handling 17818ca0-5f4b-4730-9873-4ec09a635ca1-1, org.jboss.resteasy.spi.UnhandledException: java.lang.NullPointerException: Cannot invoke "
+  at.htl.produktionsverwaltung.entity.Product.getProductName()
+  " because the return value of "
+  at.htl.produktionsverwaltung.repository.ProductRepository.findByID(java.lang.Long)
+  " is null",
+  "stack": "org.jboss.resteasy.spi.UnhandledException: java.lang.NullPointerException: Cannot invoke \"at.htl.produktionsverwaltung.entity.Product.getProductName()\" because the return value of \"at.htl.produktionsverwaltung.repository.ProductRepository.findByID(java.lang.Long)\" is null\n
+}
+----
+|gen(4)
+
+
+
+
+
+
+|{counter:katnr}
+|BB
+a|
+* Thema Centermanager
+* keine ausreichende Doku im README.md (aber Du hast wenigstens Deinen Namen dabei)
+* Es gibt eine verblüffende Gleichheit zwischen Deiner und der Abgabe von Hrn Raid
+image:comparison-besic-raid.png[]
+|[.line-through]#gut(2)# ->gen(4)
+
+|{counter:katnr}
+|BP
+a|
+* Thema Baustellenkoordinator
+* n/a
+|ngd(5)
+
+|{counter:katnr}
+|BJ
+a|
+* Thema Baumschule
+* keine ausreichende Doku im README.md
+* in den routes nicht Groß-Kleinschreibung verwenden sondern kebab-Case
+* Du weißt schon was eine Baumschule ist. Dort gibt es keine Lehrer sondern Gärtner.
+** Ein Baumschule ist eine Gärtnerei
+* Das ist wohl zu kompliziert
+** Wieso verwendest Du zwei Methoden und dann auch noch mit JsonValue
+** Eine Methode mit JsonValue hätte gereicht oder 2 Methoden je mit JsonArray und JsonObject
+
+[source,java]
+----
+@Path("api/teachers")
+public class TeacherService {
+
+    @POST
+    @Path("addTeacher")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response saveTeacher(JsonValue teacher) {
+        return Response
+                .ok("Teacher: " + Repository.saveTeacher(teacher.asJsonObject()))
+                .build();
+    }
+
+    @POST
+    @Path("addTeachers")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response saveTeachers(JsonValue teachers) {
+        return Response
+                .ok("Size: " + Repository.saveTeachers(teachers.asJsonArray()))
+                .build();
+    }
+    //...
+}
+----
+* Wir müssen über die Gestaltung der Responses sprechen.
+* Es ist nicht optimal, wenn man beliebig oft ein und dieselbe Person POSTen kann und es wird jeweils ein Datensatz erstellt
+* Bei xml funktioniert die Ausgabe des Datums nicht -> XmlAdapter verwenden
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<collection>
+    <teacherEntity>  // <.>
+        <address>Liebigstrasse 16</address>
+        <birthDate/>
+        <insuranceNumber>JW 74 85 38 D</insuranceNumber>
+        <name>Andrea Buche</name>
+    </teacherEntity>
+</collection>
+----
+<.> <Teacher> wäre ausreichend
+* Dein DELETE funktioniert nicht
+** die Route ist im Service und im .http File unterschiedlich
+** probierst Du Deine Endpoints nicht aus?
+* trotzdem sehr sauber
+|gut(2)
+
+
+
+
+
+|{counter:katnr}
+|BN
+a|
+* Kochrezepte
+* keine ausreichende Doku im README.md
+* in den routes nicht Groß-Kleinschreibung verwenden sondern kebab-Case
+* Packages verwenden
+** RecipeService -> Package boundary
+** Repository -> package control
+* sehr umfangreich und toll gemacht
+* Anmerkung:
+
+.derzeit
+[source,json]
+----
+    "ingredients": [
+      {
+        "amount": "500g",
+        "name": "Faschiertes vom Rind"
+      },
+      {
+        "amount": "1 EL",
+        "name": "Semmelbrösel"
+      },
+----
+
+.besser wäre
+[source,json]
+----
+    "ingredients": [
+      {
+        "amount": 500,  # <.>
+        "unit": "g"   # <.>
+        "name": "Faschiertes vom Rind"
+      },
+      {
+        "amount": 1,
+        "unit": "EL"
+        "name": "Semmelbrösel"
+      },
+----
+<.> JsonNumber anstelle von JsonString
+<.> Verwendung einer Einheit (Unit)
+
+* Es ist nicht optimal, wenn man beliebig oft ein und dieselbe Person POSTen kann und es wird jeweils ein Datensatz erstellt
+* Wird ein DELETE 2 x durchgeführt
+** java.util.NoSuchElementException: No value present
+** hätte man auch abfangen können
+
+| sgt(1)
+
+
+
+
+
+
+
+|{counter:katnr}
+|EB
+a|
+* Thema Farmverwaltung
+* keine ausreichende Doku im README.md
+* Packages verwenden
+* Bei dob reicht ein LocalDate, es muss kein LocalDateTime sein (in Klasse Animal)
+* (+) Singleton für Repository verwendet
+* sprechende Namen verwenden -> ExampleResource (?!)
+* in den routes nicht Groß-Kleinschreibung verwenden sondern kebab-Case
+* Du legst ein neues Tier mit @GET an??? -> in der ExampleResource
+**  Im .http-file verwendest Du POST
+* Du verwendest @Transactional. Wir haben noch gar keine Datenbank.
+* Ist zwar lauffähig, funktioniert aber nicht
+|gen(4)
+
+
+
+
+
+
+|{counter:katnr}
+|EM
+a|
+* Thema Optiker
+* Doku im README.md ungenügend, aber zumindest im äußeren README, hast Du eine Info zum starten drinnen
+* mit LocalDateAdapter -> Bravo
+* sehr sauber und vollständig
+|sgt(1)
+
+
+
+|{counter:katnr}
+|GL
+a|
+* Thema Facility Management
+* keine ausreichende Doku im README.md
+* in den routes nicht Groß-Kleinschreibung verwenden sondern kebab-Case
+** eher kurze Routen verwenden
+** Du verwendest außerdem doppelte Routen !!!!!!!!!!!!!!!!!!!!!!!!!
+
+.bei diesem Java-Code ...
+[source,java]
+----
+@Path("FacilityManagement") // <.>
+public class FacilityManagement {
+    @POST
+    @Path("FacilityManagement") // <.>
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createWorker(Worker worker) {
+        FacilityManagementRepository.getInstance();
+        return Response.ok(worker, MediaType.APPLICATION_JSON).build();
+    }
+    // ...
+}
+----
+
+.muss man die Route doppelt angeben ...
+----
+POST http://localhost:8080/FacilityManagement/FacilityManagement
+Content-Type: application/json
+
+{
+  "name": "Walter Klein",
+  "birthdate": "18.09.1988",
+  "typeOfFacilityManagementThatCanBePerformed" : "CLEANING"
+}
+----
+
+.doch dann kommt diese Fehlermeldung
+----
+javax.ws.rs.ProcessingException: RESTEASY008200: JSON Binding deserialization error:
+javax.json.bind.JsonbException: Unable to deserialize property <birthdate> because of:
+Error parsing class java.util.Date from value: 18.09.1988.
+Check your @JsonbDateFormat has all time units for class java.util.Date type, or consider using org.eclipse.yasson.YassonConfig#ZERO_TIME_PARSE_DEFAULTING.
+----
+* swagger funktioniert nicht
+|bef(3)
+
+
+
+
+
+
+
+|{counter:katnr}
+|HL
+a|
+* Thema Zooverwaltung
+* Entität ok
+* Repository rudimentär
+* Endpoint rudimentär
+|ngd(5)
+
+
+
+
+
+
+|{counter:katnr}
+|HN
+a|
+* Thema Event-Manager
+* keine Doku im README.md
+* Das Repository im Package entity?
+* Es ist nicht korrekt, wenn man beliebig oft ein und daselbe Element POSTen kann und es wird jeweils ein Datensatz erstellt
+* PUT funktioniert nicht
+* XML Responses fehlen
+|gut(2)
+
+
+
+
+
+
+
+|{counter:katnr}
+|HT
+a|
+* Thema Reisebüro (Travel Agency)
+* keine ausreichende Doku im README.md
+* git ok (Messages könnten aussagekräftiger sein)
+* Dein Repo hat keine save-Methode. Das widerspricht dem Repository Pattern
+* Es ist nicht korrekt, wenn man beliebig oft ein und daselbe Element POSTen kann und es wird jeweils ein Datensatz erstellt
+| gut(2)
+
+
+
+
+
+
+
+
+
+|{counter:katnr}
+|ID
+a|
+* Thema Plattenlabel
+* keine ausreichende Doku im README.md
+* application.properties
+. für Quarkus im dev-mode sind keine Properties einzutragen
+. deine Property ist falsch geschrieben: quarkus nicht uarkus
+* `deathrow` ist wahrscheinlich nicht die optimale Bezeichnung für die route.
+`api` wäre vermutlich besser
+* in den routes nicht Groß-Kleinschreibung verwenden, sondern kebab-Case
+
+.nicht ok
+[source,java]
+----
+public class SongRepository {
+    private static SongRepository instance;
+    private LinkedList<Song> songs;
+    //...
+}
+----
+
+.ok
+[source,java]
+----
+public class SongRepository {
+    private static SongRepository instance;
+    private List<Song> songs;
+    //...
+}
+----
+
+* Es ist nicht optimal, wenn man beliebig oft ein und dieselben Song POSTen kann und es wird jeweils ein Datensatz erstellt
+* Wird ein DELETE 2 x durchgeführt
+** UnhandledException: java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+** hätte man auch abfangen können
+** Dein feiner Algorithmus für die DELETE-MEthode ist sehenswert.
+Mit der Holzhammermethode löscht Du immer den ersten Datensatz.
+Wieso verwendest Du dann einen @PathParam?
+|gut(2)
+
+
+
+
+
+
+
+|{counter:katnr}
+|KJ
+a|
+* Thema Parkplatzverwaltung
+* Du könntest Dein Projekt wie angegeben u.a. mit Deinem Namen benennen.
+* keine Doku im README.md
+* Es ist nicht korrekt, wenn man beliebig oft ein und dasselbe Element POSTen kann und es wird jeweils ein neuer Datensatz erstellt
+|gut(2)
+
+
+
+
+
+
+
+|{counter:katnr}
+|KV
+a|
+* Thema Skischule
+* keine Doku im README.md
+* kein swagger aktiviert
+* nur 1 commit (?!)
+* Es ist nicht korrekt, wenn man beliebig oft ein und dasselbe Element POSTen kann und es wird jeweils ein neuer Datensatz erstellt
+* PUT und DELETE funktioniert, auch bei mehrfacher Ausführung
+| gut(2)
+
+
+
+
+
+
+
+
+|{counter:katnr}
+|ÖM
+a|
+* Thema Fitnessstudio
+* Du sollst und musst Git verwenden !!!!
+* MEthoden sind klein zu schreiben!!!
+* Es ist nicht optimal, wenn man beliebig oft ein und dieselbe SportEquipment POSTen kann und es wird jeweils ein Datensatz erstellt
+* Wird ein DELETE 2 x durchgeführt
+** java.util.NoSuchElementException: No value present
+** hätte man auch abfangen können
+
+|gut(2)
+
+
+
+
+
+
+
+|{counter:katnr}
+|PM
+a|
+* Thema Fakturierung
+* n/a
+|ngd(5)
+
+
+
+
+
+
+
+
+|{counter:katnr}
+|PM2
+a|
+* Thema Kfz-Händler
+* keine Dokumentation in README.md
+* Dein POST Endpoint verlangt einen Body, im Aufruf hast Du aber keinen
+** UnhandledException: java.lang.NullPointerException: Cannot invoke "Object.toString()" because "car" is null
+* Dein PUT funktioniert auch nicht
+** org.jboss.resteasy.spi.UnhandledException: java.lang.NullPointerException: Cannot invoke "at.htl.cardealer.entity.Car.getId()" because "c" is null
+* Da machst Du einen gröberen  Fehler
+
+[source,json]
+----
+[
+  null, # <.>
+  {
+    "brand": "Mercedes",
+    "color": "black",
+    "construction_year": 2017,
+    "horsePower": 400,
+    "id": 1,
+    "model": "E500"
+  }
+]
+----
+<.> dieses Element muss entfernt werden; es ist aber noch da, nur ist es null.
+Dieser Zustand trat ein, bevor DELETE aufgerufen wurde
+
+
+* Dein DELETE ist auch nicht besonders erfolgreich
+----
+{
+  "details": "Error handling 088db169-b1c7-4a6a-b069-f7bb4b7352e1-4, org.jboss.resteasy.spi.UnhandledException: java.lang.NullPointerException: Cannot invoke "
+  at.htl.cardealer.entity.Car.getId()
+  " because "
+  c
+  " is null",
+  "stack": "org.jboss.resteasy.spi.UnhandledException: java.lang.NullPointerException: Cannot invoke \"at.htl.cardealer.entity.Car.getId()\" because \"c\" is null\n	at org.jboss.resteasy.core.ExceptionHandler.handleApplicationException(ExceptionHandler.java:106)\n	at org.jboss.resteasy.core.ExceptionHandler.handleException(ExceptionHandler.java:372)\n	at org.jboss.resteasy.core.SynchronousDispatcher.writeException(SynchronousDispatcher.java:216)\n	at org.jboss.resteasy.core.SynchronousDispatcher.invoke(SynchronousDispatcher.java:515)\n	at org.jboss.resteasy.core.SynchronousDispatcher.lambda$invoke$4(SynchronousDispatcher.java:259)\n	at org.jboss.resteasy.core.SynchronousDispatcher.lambda$preprocess$0(SynchronousDispatcher.java:160)\n	at org.jboss.resteasy.core.interception.jaxrs.PreMatchContainerRequestContext.filter(PreMatchContainerRequestContext.java:364)\n	at org.jboss.resteasy.core.SynchronousDispatcher.preprocess(SynchronousDispatcher.java:163)\n	at org.jboss.resteasy.core.SynchronousDispatcher.invoke(SynchronousDispatcher.java:245)\n	at io.quarkus.resteasy.runtime.standalone.RequestDispatcher.service(RequestDispatcher.java:73)\n	at io.quarkus.resteasy.runtime.standalone.VertxRequestHandler.dispatch(VertxRequestHandler.java:131)\n	at io.quarkus.resteasy.runtime.standalone.VertxRequestHandler.access$000(VertxRequestHandler.java:37)\n	at io.quarkus.resteasy.runtime.standalone.VertxRequestHandler$1.run(VertxRequestHandler.java:94)\n	at io.quarkus.runtime.CleanableExecutor$CleaningRunnable.run(CleanableExecutor.java:231)\n	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)\n	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)\n	at org.jboss.threads.ContextClassLoaderSavingRunnable.run(ContextClassLoaderSavingRunnable.java:35)\n	at org.jboss.threads.EnhancedQueueExecutor.safeRun(EnhancedQueueExecutor.java:2046)\n	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.doRunTask(EnhancedQueueExecutor.java:1578)\n	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1452)\n	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)\n	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)\n	at java.base/java.lang.Thread.run(Thread.java:832)\n	at org.jboss.threads.JBossThread.run(JBossThread.java:479)\nCaused by: java.lang.NullPointerException: Cannot invoke \"at.htl.cardealer.entity.Car.getId()\" because \"c\" is null\n	at at.htl.cardealer.CarRepository.lambda$remove$0(CarRepository.java:33)\n	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:176)\n	at java.base/java.util.LinkedList$LLSpliterator.tryAdvance(LinkedList.java:1256)\n	at java.base/java.util.stream.ReferencePipeline.forEachWithCancel(ReferencePipeline.java:127)\n	at java.base/java.util.stream.AbstractPipeline.copyIntoWithCancel(AbstractPipeline.java:502)\n	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:488)\n	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n	at java.base/java.util.stream.FindOps$FindOp.evaluateSequential(FindOps.java:150)\n	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n	at java.base/java.util.stream.ReferencePipeline.findAny(ReferencePipeline.java:548)\n	at at.htl.cardealer.CarRepository.remove(CarRepository.java:33)\n	at at.htl.cardealer.boundary.CarService.delete(CarService.java:52)\n	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)\n	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n	at java.base/java.lang.reflect.Method.invoke(Method.java:564)\n	at org.jboss.resteasy.core.MethodInjectorImpl.invoke(MethodInjectorImpl.java:167)\n	at org.jboss.resteasy.core.MethodInjectorImpl.invoke(MethodInjectorImpl.java:130)\n	at org.jboss.resteasy.core.ResourceMethodInvoker.internalInvokeOnTarget(ResourceMethodInvoker.java:638)\n	at org.jboss.resteasy.core.ResourceMethodInvoker.invokeOnTargetAfterFilter(ResourceMethodInvoker.java:504)\n	at org.jboss.resteasy.core.ResourceMethodInvoker.lambda$invokeOnTarget$2(ResourceMethodInvoker.java:454)\n	at org.jboss.resteasy.core.interception.jaxrs.PreMatchContainerRequestContext.filter(PreMatchContainerRequestContext.java:364)\n	at org.jboss.resteasy.core.ResourceMethodInvoker.invokeOnTarget(ResourceMethodInvoker.java:456)\n	at org.jboss.resteasy.core.ResourceMethodInvoker.invoke(ResourceMethodInvoker.java:417)\n	at org.jboss.resteasy.core.ResourceMethodInvoker.invoke(ResourceMethodInvoker.java:391)\n	at org.jboss.resteasy.core.ResourceMethodInvoker.invoke(ResourceMethodInvoker.java:68)\n	at org.jboss.resteasy.core.SynchronousDispatcher.invoke(SynchronousDispatcher.java:488)\n	... 20 more"
+}
+----
+
+* nur 2 commits :-(
+|gen(4)
+
+
+
+
+
+
+
+
+|{counter:katnr}
+|RY
+a|
+* Thema Friseurladen
+* keine Dokumentation in README.md
+* nur 3 commits
+** eigentlich dachte ich Du erstellst eine Terminreservierung für einen Barber-Shop.
+* Dein Repository hat keine save()-Methode. Du addest direkt im Endpoint. Das ist nicht korrekt.
+* Du verwendest @Transactional, aber Du verwendest kein CDI.
+* du hast einen Wirbel mit Deinen routes (im Code "barberShop" im aufruf "shops")
+* in den routes nicht Groß-Kleinschreibung verwenden sondern kebab-Case
+* PUT wirft Fehlermeldung, wenn Element nicht vorhanden
+** java.util.NoSuchElementException: No value present
+* PUT wirft auch Fehlermeldung, wenn Element vorhanden
+
+----
+PUT http://localhost:8080/shops/freestyleBarber
+
+HTTP/1.1 200 OK
+Content-Length: 34
+Content-Type: application/json
+
+Shop freestyleBarberdoesn't exist!
+
+Response code: 200 (OK); Time: 28ms; Content length: 34 bytes
+----
+* DELETE funktioniert nicht bei mehrmaligen Aufruf
+** java.util.NoSuchElementException: No value present
+* Ausgabe zu xml funktioniert nicht
+|[.line-through]#bef(3)# -> gen(4)
+
+
+
+
+
+
+
+
+|{counter:katnr}
+|RR
+a|
+* Thema Restaurant
+* n/a
+|ngd(5)
+
+
+
+
+
+
+
+|{counter:katnr}
+|RF
+a|
+* Thema Juwelier
+* kein Swagger installiert
+* nur 2 git commits
+* Immer möglichst abstrakt deklarieren (zB mit Interface)
+
+.nicht ok
+[source,java]
+----
+public class Repository {
+
+    LinkedList<Jewelery> jeweleryList = new LinkedList<>();
+    //...
+}
+----
+
+.besser
+[source,java]
+----
+public class Repository {
+
+    List<Jewelery> jeweleryList = new LinkedList<>();
+    //...
+}
+----
+
+|gut(2)
+
+
+
+
+
+
+
+
+|{counter:katnr}
+|SE
+a|
+* Busreisen (inkl Schulbusse)
+* keine Dokumentation in README.md
+* `request.http` bitte immer im Ordner http-requests ablegen
+* Rückgabe von LocalDatetime in XML funktioniert nicht -> XmlAdapter verwenden
+* Formatierung von LocalDateTime in Response ist unübersichtlich -> https://github.com/quarkusio/quarkus/issues/8611#issuecomment-614695866[info, window="_blank"]
+* Es ist nicht optimal, wenn man beliebig oft ein und dieselben Ride POSTen kann und es wird jeweils ein Datensatz erstellt
+* Wird ein DELETE 2 x durchgeführt
+** Response code: 500 (Internal Server Error)
+** das widerspricht der Idempotenz-Anforderung
+
+|gut(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|{counter:katnr}
+|SB
+a|
+* Thema Autovermietung
+* keine ausreichende Dokumentation in README.md
+* im Repository musst Du die Methode nicht saveCar() benennen, nur save() reicht
+* es fehlt ein Endpoint, um nur ein Auto abzurufen.
+* git ok
+* Dein DELETE ist so nicht korrekt. Man gibt keinen Body mit, sondern "nur" eine id
+|gut(2)
+
+
+
+
+
+
+|{counter:katnr}
+|SP
+a|
+* Thema Tanzschule
+* keine Dokumentation in README.md
+* Deine Entity-Klasse hat keine Setter
+* Endpoint nur rudimentär
+|ngd(5)
+
+
+
+
+
+
+|{counter:katnr}
+|TF
+a|
+* Thema Bücherei
+* ungenügende Dokumentation in README.md
+* Schon mal was vom Geheimnisprinzip / Kapselung gehört?
+
+[source,java]
+----
+public class Book {
+    int id;
+    String bookName;
+    String publisher;
+    String autor;
+    //...
+}
+----
+
+* Sollte Dein Repository nicht ein paar Methoden haben?
+** Du hast die gesamte Logik des Repositories in den Endpoint ausgelagert.
+Das ist nicht ok.
+
+[source,java]
+----
+public class BookRepository {
+    private static BookRepository instance;
+    private List<Book> books = new ArrayList<>();
+
+    public static BookRepository getInstance() {
+        if(BookRepository.instance == null){
+            BookRepository.instance = new BookRepository();
+        }
+        return BookRepository.instance;
+    }
+
+    public List<Book> getBookList() {
+        return books;
+    }
+}
+----
+* Man sollte auch ein einzelnes Buch abrufen können
+* Man kann ein POST beliebig oft wiederholen und das Element wird immer wieder eingefügt
+* Führt man ein DELETE mehrmals aus
+** java.lang.IndexOutOfBoundsException: Index 3 out of bounds for length 3
+** hätte man auch abfangen können
+** Beim Löschen löschst Du nicht die id == 3 sondern immer die Position 3 (index)
+-> Algorithmus ist mies
+* Du kannst kein XML zurückgeben, nur Json
+|gut(2)
+
+
+
+
+
+
+
+|{counter:katnr}
+|TP
+a|
+* Thema Friedhofsverwaltung
+* ungenügende Dokumentation in README.md
+* Die gesamte Repository-Logik ist im Endpoint.
+* swagger nicht aktiviert
+* die commits sind überschaubar
+* da hätte eine toString()-Methode durchaus Sinn gemacht
+
+----
+POST http://localhost:8080/Graveyard/Init
+
+HTTP/1.1 200 OK
+Content-Length: 0
+POST: [at.htl.graveyard.entity.Gravestone@73d1441b, at.htl.graveyard.entity.Gravestone@3620636, at.htl.graveyard.entity.Gravestone@24d705a3, at.htl.graveyard.entity.Gravestone@7cea504b, at.htl.graveyard.entity.Gravestone@5622251]
+
+<Response body is empty>
+
+Response code: 200 (OK); Time: 61ms; Content length: 0 bytes
+----
+* Du machst beim init ein POST, obwohl der Body leer ist
+* Dein DELETE funktioniert nicht, Du löscht einfach einen index und keine id
+* detto beim PUT
+|bef(3)
+
+
+
+
+
+|{counter:katnr}
+|WM
+a|
+* Thema Callcenter
+* commits sogar mit branches.
+* einmal keine List als Collection -> Bravo
+* Man kann ein POST beliebig oft wiederholen und das Element wird immer wieder eingefügt
+|sgt(1)
+
+
+|===
+
+.Kriterien
+* Das Projekt muss lauffähig sein (am Besten in ein neues Verzeichnis clonen und ausprobieren)
+* Testdaten sind sehr hilfreich
+* CRUD muss vorhanden sein
+
+.Allgemeine Bemerkungen
+* die Angabe ist keine Empfehlung / Vorschlag sondern bindend
+** Benennung des Projekts
+** Commits
+** ...
+* Das Java-Projekt muss direkt im Repo-Ordner sein, nicht in einem Unterverzeichnis
+* Bezeichner in englisch (ist so üblich)
+* ist eine List wirklich die geeignete Collection für das Repository
+* der erste url einer RESTful-API sollte `/api` sein  (ebenfalls sehr oft üblich)
+* in den routes nicht Groß-Kleinschreibung verwenden sondern kebab-Case
+* Im README-md file könnte man grob die inhaltliche Zielsetzung umreißen.
+* Repositories: Warum und Aufbau
+** Kritische Anmerkungen zum Repository Pattern bei Verwendung eines ORM
+** Was ist ein Aggregate bzw. Root Aggregate (Starke Entität))
+** https://thorben-janssen.com/implementing-the-repository-pattern-with-jpa-and-hibernate/[Implementing the Repository pattern with JPA and Hibernate, window="_blank"]
+* Verwendung von Streams (anstelle von Schleifen)
+
+.Was ist als nächstes zu lernen?
+* Verwendung von CDI
+* Paging als QueryParam
+* Fehlerbehandlung -> WebException
+* Wie sind die Responses aufgebaut?
+* Kalenderdatum als Parameter bzw Datenbestandteil
+* Automatisierte Tests
+** des Repositories
+** der Endpoints
+//====
+
+
+
+
+
+
+
+
+
