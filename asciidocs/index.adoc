@@ -335,7 +335,16 @@ public class ExampleResourceTest {
 siehe https://edufs.edu.htl-leonding.ac.at/moodle/course/view.php?id=2927[Moodle, window="_blank"]
 
 
+== 2020-10-19
 
+* https://edufs.edu.htl-leonding.ac.at/moodle/mod/page/view.php?id=113108[Feedback zum Assignment 01, window="_blank"]
+
+* CDI
+** DI ... Dependency Injection
+** C ... Context
+*** RequestScoped
+*** SessionScoped
+*** ApplicationScoped
 
 
 
