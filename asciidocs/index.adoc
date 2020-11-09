@@ -242,7 +242,7 @@ ____   ____.__       .__    ___________        _____      .__
 @startuml
 storage "java-object" as javaobject
 file json
-javaobject -right-> json :marshalling >
+javaobject -right-> json :marshalling, serialize >
 @enduml
 ----
 
@@ -251,7 +251,7 @@ javaobject -right-> json :marshalling >
 @startuml
 storage "java-object" as javaobject
 file json
-javaobject <-right- json :< unmarshalling
+javaobject <-right- json :< unmarshalling, unserialize
 @enduml
 ----
 
@@ -345,6 +345,172 @@ siehe https://edufs.edu.htl-leonding.ac.at/moodle/course/view.php?id=2927[Moodle
 *** RequestScoped
 *** SessionScoped
 *** ApplicationScoped
+
+
+== 2020-10-22
+
+* CDI
+* https://mincong.io/2018/11/27/jax-rs-parameters/[JAX-RS Param Annotations]
+* Resilienz -> Fähigkeit technischer Systeme, bei einem Teilausfall nicht vollständig zu versagen
+
+== 2020-11-09 - CDI
+
+
+http://edufs.edu.htl-leonding.ac.at/~t.stuetz/download/nvs/presentations.2021/07%20CDI.pdf[Skriptum CDI]
+
+* Scope ... (Gültigkeits-)Bereich
+** zB Gültigkeitsbereich bei Variablen (i.N. ein Block)
+** zB Lebensdauer von Objekten (ApplicationScoped, SessionScoped, RequestScoped)
+** ...
+
+* CDI
+** C ... Context ... Lebensdauer der Objekte
+** DI ... Dependency Injection ... Injizieren einer Abhängigkeit
+
+* Was bringt CDI?
+** Inversion of Control / IoC: Das Programm muss sich nicht  mehr um die Erstellung
+von Objekten kümmern, das übernimmt der Container
+** Dies führt zu wenig fehleranfälligen Programmen
+*** Um Erstellen/Zuweisen/Löschen der Objekte kümmert sich der Container
+*** Man kann einfach die Konfiguration ändern
+**** Testcontainer mit Testobjekten
+**** Produktiv-Container mit Real-Life-Objekten
+
+* https://www.dev-insider.de/was-ist-eine-dependency-a-899057/[Dependency, window="_blank"]
+** Eine Dependency oder Abhängigkeit beschreibt in der Softwareentwicklung, dass ein Programm ein bestimmtes Stück Code (z. B. Frameworks, Bibliotheken, Klasse) benötigt, um ordnungsgemäß zu funktionieren.
+
+* Wie kann ein Objekt erstellt werden?
+** Durch Verwendung des Schlüsselwortes `new`
+** Durch Verwendung von Design Patterns (Entwurfsmuster)
+*** zB einer Factory (Design Pattern)
+*** zB eines Builder Pattern (Erbauer)
+** Durch Dependency Injection
+
+.Objekterstellung mit "new"
+image:create-object-with-new.png[]
+
+* Erstellt man ein Objekt mit "new", so ist man selbst für die Lebensdauer verantwortlich
+** Man kann das obige Person-Objekt löschen, indem man die Referenz auf das Objekt auf null setzt
+** Der Garbage Collector gibt den Speicherpaltz des Objekts frei, da keine Referenz mehr auf das Objekt verweist.
+
+.Durch NULL-setzen der Refernzvariablen wird der Speicherplatz freigegeben.
+image:remove-object.png[]
+
+* Bei CDI ist der sogenannte DI-Container verantwortlich für
+** das Erstellen von Objekten
+** das Zuweisen zu einem Context (Lebensdauer)
+** das Zuweisen von Objekten zu Variablen
+** das Löschen von Objekten (Freigeben des Speicherplatzes)
+** man spricht von "container-managed" Objekten oder auch Java-Beans
+** Durch Verwendung von Annotationen (@ApplicationScoped, @SessionScoped, @RequestScoped) kann
+man die Lebensdauer beeinflussen.
+** Mit *@Inject* kann der Developer eine Instanz einer Klasse anfordern.
+
+* The *container* is the environment where your application runs.
+
+* Was ist ein *Servlet*
+** Ein Servlet ist *DIE* Methode, um Java-Code aus dem Internet (mittels TCP/IP))
+aufrufen zu können
+** Viele Bibliotheken zB JAX-RS, JSF usw verwenden im Hintergrund Servlets.
+
+
+=== Logging in Jakarta EE (Quarkus)
+
+https://quarkus.io/guides/logging
+
+* Es wird empfohlen den jboss-Logger zu verwenden.
+
+
+[source,java]
+----
+@ApplicationScoped
+public class GreetingService {
+
+    private static final Logger logger = Logger
+            .getLogger(GreetingService.class.getSimpleName()); // <.>
+
+    int counter;
+
+    public String greeting(String name) {
+        logger.info(String.format("Hello %s (%d x verwendet)", name, ++counter)); // <.>
+        return String.format("Hello %s (%d x verwendet)", name, ++counter);
+    }
+}
+----
+<.> Man muss einen Logger deklarieren. Der Klassenname wird übergeben.
+<.> Man kann den Logger verwenden
+
+.Output des Loggers in Console
+----
+2020-11-06 09:40:53,795 INFO  [at.htl.con.GreetingService] (executor-thread-198) Hello susi (1 x verwendet!)
+----
+
+* Es gibt *Log-Levels*
+** INFO
+** ERROR
+** FATAL
+** DEBUG
+** ...
+
+* Es gibt sogenannte *Appender* zur Ausgabe auf verschiedenen Medien
+** Konsole
+** in Text-Files (auch rotierend)
+*** zB 3 Files mit einer bestimmten Größe (zB 10k).
+*** Sind alle 3 Files beschrieben, wird das erste File gelöscht und neu beschrieben
+*** Vorteile:
+**** Der Speicher (Festplatte) wird nicht vollgeschrieben
+**** Es stehen immer Log-Meldungen aus der Vergangenheit zur Verfügung
+** in Datenbanken
+** auf einen REST-Endpoint
+** https://geekflare.com/open-source-centralized-logging/[Log-Collector] zB https://docs.graylog.org/en/3.3/pages/installation/docker.html#here[GrayLog]
+** ...
+
+==== Logging mit Dependency Injection
+
+Man kann auch einen Logger mit DI injizieren
+
+.Erstellen des Producers
+[source,java]
+----
+public class LoggerProducer {
+
+    @Produces
+    public Logger produceLogger(InjectionPoint injectionPoint) {
+        return Logger.getLogger(injectionPoint.getBean().getBeanClass());
+    }
+}
+----
+
+.Verwendung des injizierten Loggers
+[source,java]
+----
+@ApplicationScoped
+public class GreetingService {
+
+    @Inject
+    private Logger logger; // <.>
+
+    int counter;
+
+    public String greeting(String name) {
+        logger.info(String.format("Hello %s (%d x verwendet!)", name, ++counter)); // <.>
+        return String.format("Hello %s (%d x verwendet!)", name, ++counter);
+    }
+
+}
+----
+
+<.> Die Logger Klasse wird injiziert.
+<.> Die Verwendung bleibt gleich
+
+
+=== Offene Punkte
+
+* Warum funktioniert CDI nicht im Constructror?
+* Was kann ich machen, um trotzdem CDI bei der Erstellung von Objekten zu verwenden? -> @PostConstruct
+* Autostart in Quarkus-Apps (@Observer)
+
+
 
 
 
