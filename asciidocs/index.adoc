@@ -506,9 +506,81 @@ public class GreetingService {
 
 === Offene Punkte
 
-* Warum funktioniert CDI nicht im Constructror?
+* Warum funktioniert CDI nicht im Constructor?
 * Was kann ich machen, um trotzdem CDI bei der Erstellung von Objekten zu verwenden? -> @PostConstruct
 * Autostart in Quarkus-Apps (@Observer)
+
+
+== 2020-11-12
+
+===  Automatic Startup
+
+[source,java]
+----
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+@ApplicationScoped
+public class InitBean {
+
+    @Inject
+    Logger LOGGER;
+
+    void onStart(@Observes StartupEvent ev) { // <.>
+        LOGGER.error("The application is starting...");
+    }
+}
+----
+
+<.> add an Observer for lifecycle method
+
+
+== CDI and the Constructor
+
+* Warum funktioniert der Zugriff auf injizierte Ressourcen aus dem Konstruktor nicht?
+
+.Problem
+image:cdi-and-constructor.png[]
+
+
+.Lösung: Einführen der PostConstruct-Methode
+
+[source, java]
+----
+@ApplicationScoped
+public class InitBean {
+
+    Logger LOGGER;
+
+    @Inject
+    GreetingService greetingService;
+
+    public InitBean() {
+    }
+
+    @PostConstruct  // <.>
+    private void init() {
+        LOGGER.info(greetingService.greeting("Susi"));
+    }
+
+    void onStart(@Observes StartupEvent ev) {  // <.>
+        LOGGER.error("The application is starting...");
+    }
+}
+----
+
+<.> wird nach dem Konstruktor #8nachdem das Objekt fertig estellt wurde) ausgeführt.
+
+<.> es gibt neben dem StartupEvent auch ein ShutdownEvent
+
+
+.Zusammenfassung
+image:lifecycles.png[]
+
+=== Persistence
+
+
 
 
 
