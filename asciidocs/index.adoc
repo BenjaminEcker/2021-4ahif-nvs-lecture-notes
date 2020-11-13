@@ -393,7 +393,7 @@ image:create-object-with-new.png[]
 ** Man kann das obige Person-Objekt löschen, indem man die Referenz auf das Objekt auf null setzt
 ** Der Garbage Collector gibt den Speicherpaltz des Objekts frei, da keine Referenz mehr auf das Objekt verweist.
 
-.Durch NULL-setzen der Refernzvariablen wird der Speicherplatz freigegeben.
+.Durch NULL-setzen der Referenzvariablen wird der Speicherplatz freigegeben.
 image:remove-object.png[]
 
 * Bei CDI ist der sogenannte DI-Container verantwortlich für
@@ -570,7 +570,7 @@ public class InitBean {
 }
 ----
 
-<.> wird nach dem Konstruktor #8nachdem das Objekt fertig estellt wurde) ausgeführt.
+<.> wird nach dem Konstruktor, nachdem das Objekt fertig erstellt wurde, ausgeführt.
 
 <.> es gibt neben dem StartupEvent auch ein ShutdownEvent
 
