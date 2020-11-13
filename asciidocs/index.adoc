@@ -572,7 +572,7 @@ public class InitBean {
 
 <.> wird nach dem Konstruktor, nachdem das Objekt fertig erstellt wurde, ausgeführt.
 
-<.> es gibt neben dem StartupEvent auch ein ShutdownEvent
+<.> es gibt neben dem StartupEvent aupch ein ShutdownEvent
 
 
 .Zusammenfassung
