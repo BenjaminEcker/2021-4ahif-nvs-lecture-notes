@@ -23,7 +23,7 @@ public class InitBean {
     }
 
     @PostConstruct
-    private void init() {
+    void init() {
         LOGGER.info(greetingService.greeting("Susi"));
     }
 

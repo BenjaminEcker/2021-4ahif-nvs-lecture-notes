@@ -580,8 +580,74 @@ image:lifecycles.png[]
 
 === Persistence
 
+* Grundprinzip (Folien)
+
+== 2020-11-16
+
+=== Convention-over-Configuration
+
+* "Vereinbarung vor Konfiguration"
+* Man muss nicht das System extra konfigurieren
+* Es gibt eine vereinbarte Standardkonfiguration
+* Diese kann bei Bedarf geändert werden
+
+=== Strategien für Primärschlüsselerstellung
+
+* IDENTITY
+** Autowert, AutoIncrement -> in einem Tabellenfeld wird automatisch ein Zähler hochgezählt
+* SEQUENCE
+** Die Sequence ist ein eigenständiges Datenbankobjekt, die eine Folge von Zahlen generiert
+** in Reihenfolge, zufällig, rollieren usw.
+** kann man mit der Annotation @SequenceGenerator im Code erstellem
+* TABLE
+** die einfachste Variante
+** eine Tabelle (meist mit Namen SEQUENCE) hat ein Feld mit einer Zahl, die mit UPDATEs hochgezählt wird
+** Manchmal hat man für jede Tabellen-Id eine eigene Zeile
+* AUTO
+** eine der obigen Staretgien wird automatisch gewählt (meist TABLE)
 
 
+=== Transaktion
+
+* Transaktion ... kleinste unteilbare Aktion
+* zB Überweisung in einer Bank
+**    - von Konto A wird abgebucht
+**    - auf Konto B wird aufgebucht
+* Logical Unit of Work (LUW)
+* Annotation @Transactional
+
+[source,java]
+----
+@Inject
+EntityManager em;
+
+@Inject
+UserTransaction tm;
+...
+@Test
+void createPerson() throws SystemException, NotSupportedException, HeuristicRollbackException, HeuristicMixedException, RollbackException {
+    Person susi = new Person("susi");
+    tm.begin();
+    em.persist(susi);
+    tm.commit();
+    Table personTable = new Table(getDataSource(), "person");
+    output(personTable).toConsole();
+    assertThat(personTable).hasNumberOfRows(1);
+}
+----
+
+=== AssertJ-DB
+https://assertj.github.io/doc
+
+.pom.xml
+----
+<dependency>
+  <groupId>org.assertj</groupId>
+  <artifactId>assertj-db</artifactId>
+  <version>2.0.2</version>
+  <scope>test</scope>
+</dependency>
+----
 
 
 
