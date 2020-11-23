@@ -604,7 +604,7 @@ image:lifecycles.png[]
 ** eine Tabelle (meist mit Namen SEQUENCE) hat ein Feld mit einer Zahl, die mit UPDATEs hochgezählt wird
 ** Manchmal hat man für jede Tabellen-Id eine eigene Zeile
 * AUTO
-** eine der obigen Staretgien wird automatisch gewählt (meist TABLE)
+** eine der obigen Strategien wird automatisch gewählt (meist TABLE)
 
 
 === Transaktion
@@ -649,8 +649,16 @@ https://assertj.github.io/doc
 </dependency>
 ----
 
+== 2020-11-23
 
+== Übung Miniprojekt JPA
 
+* Verwenden Sie die bereits erstellten Entitäten in Ihrem Miniprojekt
+* Achten Sie dabei auf eine korrekte Definition der Beziehungen
+* Erstellen Sie ein UCD mit 3 datenbankbasierten Use-Case (plantuml)
+* Implementieren Sie die geeigneten REST-Resourcen, um diese Use-Cases testen zu können.
+* Achten Sie auf geeignete Commits
+* Benennen Sie die Tabelle und die Spalten entsprechend
+* ....
 
-
-
+https://www.objectdb.com/java/jpa/query/named
